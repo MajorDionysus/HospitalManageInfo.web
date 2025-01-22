@@ -45,7 +45,7 @@
 ## 实现情况
 1. 搜索框示例
    - 位置：搜索框模块
-   - 示例截图：搜索李姓的神经领域相关专家。
+   - 示例截图：搜索张姓的神经领域相关专家。
    - **GitHub 内连接**：`assets/search_example.png`
 ![](assets/search_example.png)
 2. 专家列表
