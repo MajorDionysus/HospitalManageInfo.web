@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家列表与网址导航</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f9fc; /* 浅灰白背景 */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+        }
+        h2, h3 {
+            font-weight: bold;
+            color: #003366; /* 深蓝色标题 */
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .table {
+            font-size: 14px;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        .table th {
+            background-color: #e6f2ff; /* 浅蓝色表头 */
+            color: #003366; /* 深蓝字体 */
+        }
+        .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .btn {
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #0066cc; /* 蓝色按钮 */
+            border-color: #0066cc;
+        }
+        .btn-primary:hover {
+            background-color: #005bb5;
+        }
+        .btn-success {
+            background-color: #009966; /* 绿色按钮 */
+            border-color: #009966;
+        }
+        .btn-success:hover {
+            background-color: #008055;
+        }
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .list-group-item {
+            font-size: 14px;
+            background-color: #ffffff;
+            border: 1px solid #e6e6e6;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .list-group-item a {
+            text-decoration: none;
+            color: #003366;
+        }
+        .list-group-item a:hover {
+            text-decoration: underline;
+        }
+        .input-group .btn {
+            width: 120px;
+            text-align: center;
+        }
+        .d-flex .btn {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">专家列表</h2>
+
+    <!-- 搜索框 -->
+    <form method="get" action="" class="mb-4">
+        <div class="row g-2">
+            <!-- 姓名搜索 -->
+            <div class="col-md-3">
+                <input type="text" name="name" class="form-control" placeholder="按姓名搜索" value="{{ request.GET.name }}">
+            </div>
+            <!-- 科室搜索 -->
+            <div class="col-md-3">
+                <input type="text" name="department" class="form-control" placeholder="按科室搜索" value="{{ request.GET.department }}">
+            </div>
+            <!-- 职称搜索 -->
+            <div class="col-md-3">
+                <input type="text" name="job" class="form-control" placeholder="按职称搜索" value="{{ request.GET.job }}">
+            </div>
+            <!-- 搜索按钮 -->
+            <div class="col-md-3 d-flex align-items-center">
+                <button type="submit" class="btn btn-primary w-100">搜索</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 导入导出功能和新增专家按钮 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- 导入表单 -->
+        <form method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="file" name="import_file" class="form-control" required>
+                <button type="submit" class="btn btn-success">导入数据</button>
+            </div>
+        </form>
+        <!-- 导出按钮 -->
+        <a href="?export=true" class="btn btn-success">导出数据</a>
+        <!-- 新增专家按钮 -->
+        <a href="{% url 'admin:hospital_app_listitem_add' %}" class="btn btn-primary">新增专家</a>
+    </div>
+
+    <!-- 专家列表表格 -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>科室</th>
+                    <th>职称</th>
+                    <th>所属医院科室</th>
+                    <th>帮扶项目</th>
+                    <th>职务</th>
+                    <th>专业特长</th>
+                    <th>坐诊时间</th>
+                    <th>联系人</th>
+                    <th>联系方式</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list_items %}
+                    {% if item.is_visible %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.department }}</td>
+                            <td>{{ item.job }}</td>
+                            <td>{{ item.origin_department }}</td>
+                            <td>{{ item.project }}</td>
+                            <td>{{ item.duty }}</td>
+                            <td>{{ item.talent }}</td>
+                            <td>{{ item.official_time }}</td>
+                            <td>{{ item.contactor }}</td>
+                            <td>{{ item.contact }}</td>
+                            <td>
+                                <a href="{% url 'admin:hospital_app_listitem_change' item.id %}" class="btn btn-warning btn-sm">编辑</a>
+                                <a href="{% url 'admin:hospital_app_listitem_delete' item.id %}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('确定删除该专家吗？')">删除</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <nav>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span>当前显示 {{ list_items.start_index }}-{{ list_items.end_index }} 条，共 {{ list_items.paginator.count }} 条记录</span>
+            <ul class="pagination">
+                {% if list_items.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ list_items.previous_page_number }}">上一页</a>
+                    </li>
+                {% endif %}
+                {% for page_num in list_items.paginator.page_range %}
+                    {% if page_num >= list_items.number|add:-2 and page_num <= list_items.number|add:2 %}
+                        <li class="page-item {% if list_items.number == page_num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if list_items.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ list_items.next_page_number }}">下一页</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 超链接导航 -->
+    <h3 class="text-center mt-5">网址导航</h3>
+    <div class="row">
+        {% for link in hyperlinks %}
+            <div class="col-md-4">
+                <div class="list-group mb-3">
+                    <a href="{{ link.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        {{ link.text }}
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-muted">暂无可显示的超链接。</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
