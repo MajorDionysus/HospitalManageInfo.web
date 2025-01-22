@@ -51,8 +51,9 @@
 2. 专家列表
    - 位置：专家信息表格
    - 示例截图：展示多条专家记录的分页列表。
-   - **GitHub 内连接**：`assets/expert_list.png`
-![](assets/expert_list.png)
+   - **GitHub 内连接**：`assets/expert_list1.png`
+![顶](assets/expert_list.png)
+![底](assets/expert_list1.png)
 3. 新增专家
    - 位置：新增专家按钮
    - 示例截图：新增专家的输入表单页面。
